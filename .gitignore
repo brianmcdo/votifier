@@ -1,6 +1,7 @@
 /vendor
 /tests
 /bin
+/.idea
 config.php
 composer.phar
 composer.lock
