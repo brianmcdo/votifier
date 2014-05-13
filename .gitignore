@@ -1,0 +1,10 @@
+/vendor
+/tests
+/bin
+config.php
+composer.phar
+composer.lock
+public.pem
+private.pem
+.DS_Store
+Thumbs.db

@@ -1,0 +1,24 @@
+{
+    "name": "bfoxwell/votifier-server",
+    "description": "Votifier Server Listner in PHP",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Brian McDonald",
+            "email": "brian@foxwell.io"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "cboden/Ratchet": "0.3.*",
+        "illuminate/database": "*",
+        "davedevelopment/phpmig": "*",
+        "pimple/pimple": "1.*"
+    },
+    "config": {
+        "bin-dir": "bin/"
+    },
+    "autoload": {
+        "classmap": ["app"]
+    }
+}
