@@ -11,7 +11,7 @@ $config = [
 	'port' => 8192, // Default: 8192
 ];
 
-$server = new Votifier($config, function($message)
+$server = new Votifier($config, function($message) // $message returns array
 {
 	echo json_encode($message), PHP_EOL;
 });
