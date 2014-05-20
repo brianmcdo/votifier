@@ -35,28 +35,35 @@ class Votifier implements LoggerAwareInterface
 	protected $logger;
 
 	/**
+	 * Task
+	 *
+	 * @var callable
+	 */
+	protected $task;
+
+	/**
 	 * Votifier
 	 *
 	 * @param array $config
+	 * @param callable $task
 	 */
-	public function __construct(array $config)
+	public function __construct(array $config, callable $task)
 	{
 		$this->config = $this->setDefaults($config);
+		$this->task = $task;
 	}
 
 	/**
 	 * Start Server
-	 *
-	 * @param callable $callback
 	 */
-	public function run(callable $callback)
+	public function run()
 	{
 		if(is_null($this->logger))
 		{
 			$this->logger = new NullLogger;
 		}
 
-		$listener = new Listener($this->config, $callback, new Crypt, $this->logger);
+		$listener = new Listener($this->config, $this->task, new Crypt, $this->logger);
 
 		$server = IoServer::factory($listener, $this->config['port'], $this->config['address']);
 
