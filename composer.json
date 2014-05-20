@@ -1,6 +1,6 @@
 {
-    "name": "bfoxwell/votifier-server",
-    "description": "Votifier Server Listener in PHP",
+    "name": "bfoxwell/votifier",
+    "description": "Votifier Server API for use in PHP",
     "license": "MIT",
     "authors": [
         {
