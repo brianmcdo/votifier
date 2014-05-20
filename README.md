@@ -75,3 +75,8 @@ Message Returns
 ```php
     $server->run();
 ```
+
+## TODO
+
+* Add usage with supervisord to readme.
+* Do unit tests.
