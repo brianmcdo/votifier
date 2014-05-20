@@ -1,6 +1,6 @@
 {
     "name": "bfoxwell/votifier-server",
-    "description": "Votifier Server Listner in PHP",
+    "description": "Votifier Server Listener in PHP",
     "license": "MIT",
     "authors": [
         {
@@ -8,15 +8,11 @@
             "email": "brian@foxwell.io"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
+        "php": ">=5.4.0",
         "cboden/Ratchet": "0.3.*",
-        "illuminate/database": "*",
-        "davedevelopment/phpmig": "*",
-        "pimple/pimple": "1.*"
-    },
-    "config": {
-        "bin-dir": "bin/"
+        "psr/log": "~1.0"
     },
     "autoload": {
         "classmap": ["app"]

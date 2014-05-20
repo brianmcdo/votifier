@@ -1,36 +1,105 @@
 <?php namespace BFoxwell\Votifier;
 
-use Ratchet\MessageComponentInterface;
+use Psr\Log\LoggerInterface;
 use Ratchet\ConnectionInterface;
-use BFoxwell\Votifier\Models\Votes;
+use Ratchet\MessageComponentInterface;
 
 class Listener implements MessageComponentInterface
 {
-	protected $privateKey;
-	protected $passphrase;
+	/**
+	 * Logger
+	 *
+	 * @var \Psr\Log\LoggerInterface
+	 */
+	protected $logger;
 
-	public function __construct($privateKey, $passphrase = "")
+	/**
+	 * Listener
+	 *
+	 * @param array $config
+	 * @param callable $callback
+	 * @param Crypt $crypt
+	 * @param \Psr\Log\LoggerInterface $logger
+	 */
+	public function __construct(array $config, callable $callback, Crypt $crypt, LoggerInterface $logger)
 	{
-		$this->privateKey = $privateKey;
-		$this->passphrase = $passphrase;
+		$this->config = $config;
+		$this->callback = $callback;
+		$this->crypt = $crypt;
+		$this->logger = $logger;
 	}
 
-	public function onMessage(ConnectionInterface $from, $msg)
+	/**
+	 * New Connection
+	 *
+	 * @param ConnectionInterface $conn
+	 */
+	public function onOpen(ConnectionInterface $conn)
 	{
-		$message = $this->decrypt($msg);
-		$message = $this->decode($message);
+		$this->logger->notice('Connection established from ' . $conn->remoteAddress);
+	}
 
-		if(is_array($message))
+	/**
+	 * Receive Message
+	 *
+	 * @param ConnectionInterface $from
+	 * @param string $message
+	 */
+	public function onMessage(ConnectionInterface $from, $message)
+	{
+		$decrypted = $this->crypt->decrypt(
+			$message,
+			$this->config['key'],
+			$this->config['passphrase']
+		);
+
+		$msg = $this->decode($decrypted);
+
+		if(is_array($msg))
 		{
-			echo json_encode($message);
-			Votes::create($message);
+			call_user_func($this->callback, $msg);
+
+			$this->logger->info(json_encode($msg));
+		}
+
+		if($msg === false)
+		{
+			$this->logger->notice('Message from ' . $from->remoteAddress . ' is invalid.');
 		}
 	}
 
-	protected function decode($message)
+	/**
+	 * On Error
+	 *
+	 * @param ConnectionInterface $conn
+	 * @param \Exception $e
+	 */
+	public function onError(ConnectionInterface $conn, \Exception $e)
 	{
-		$message = trim($message);
-		$collection = preg_split("/\\r\\n|\\r|\\n/", $message);
+		$this->logger->error($e->getMessage());
+	}
+
+	/**
+	 * On Closed Connection
+	 *
+	 * @param ConnectionInterface $conn
+	 */
+	public function onClose(ConnectionInterface $conn)
+	{
+		$this->logger->notice('Connection closed for ' . $conn->remoteAddress);
+	}
+
+	/**
+	 * Decode expected votifier string
+	 *
+	 * @param $msg
+	 * @return array|bool
+	 */
+	public function decode($msg)
+	{
+		$msg = trim($msg);
+
+		$collection = preg_split("/\\r\\n|\\r|\\n/", $msg);
 
 		if(array_shift($collection) === 'VOTE')
 		{
@@ -38,21 +107,10 @@ class Listener implements MessageComponentInterface
 				'service_name' => $collection[0],
 				'player' => $collection[1],
 				'ip' => $collection[2],
-				'voted_at' => date('Y-m-d h:i:s', $collection[3])
+				'voted_at' => $collection[3]
 			];
 		}
 
 		return false;
 	}
-
-	protected function decrypt($message)
-	{
-		$decrypt = openssl_private_decrypt($message, $decryptedMessage, $this->privateKey);
-
-		return $decrypt ? $decryptedMessage : false;
-	}
-
-	public function onOpen(ConnectionInterface $conn){}
-	public function onClose(ConnectionInterface $conn){}
-	public function onError(ConnectionInterface $conn, \Exception $e){}
-}
+} 
