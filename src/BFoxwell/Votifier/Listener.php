@@ -57,7 +57,7 @@ class Listener implements MessageComponentInterface
 
 		if(is_array($msg))
 		{
-			call_user_func($this->callback, $msg);
+			call_user_func($this->callback, $msg, $this->logger);
 
 			$this->logger->info(json_encode($msg));
 		}

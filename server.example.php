@@ -2,6 +2,8 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 use BFoxwell\Votifier\Votifier;
 
 $config = [
@@ -11,11 +13,17 @@ $config = [
 	'port' => 8192, // Default: 8192
 ];
 
-$server = new Votifier($config, function($message) // $message returns array
+$server = new Votifier($config, function($message, $log) // $message returns array
 {
 	echo json_encode($message), PHP_EOL;
+
+	$log->notice('This is a test notice');
 });
 
-$server->setLogger(new \Psr\Log\NullLogger()); // Set Logger (optional)
+$log = new Logger('Votifier');
+
+$log->pushHandler(new StreamHandler(__DIR__ . '/votifier.log'));
+
+$server->setLogger($log); // Set Logger (optional)
 
 $server->run();

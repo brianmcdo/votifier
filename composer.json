@@ -14,10 +14,13 @@
         "psr/log": "~1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.0.*"
+        "phpunit/phpunit": "4.0.*",
+        "monolog/monolog": "1.9.1"
     },
     "autoload": {
-        "classmap": ["app"]
+	    "psr-4": {
+            "BFoxwell\\Votifier\\": "src/BFoxwell/Votifier"
+        }
     },
     "minimum-stability": "stable"
 }
