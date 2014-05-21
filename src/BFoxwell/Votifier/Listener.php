@@ -7,6 +7,27 @@ use Ratchet\MessageComponentInterface;
 class Listener implements MessageComponentInterface
 {
 	/**
+	 * Configuration
+	 *
+	 * @var array
+	 */
+	protected $config;
+
+	/**
+	 * Callback
+	 *
+	 * @var callable
+	 */
+	protected $callback;
+
+	/**
+	 * Crypto Library
+	 *
+	 * @var Crypt
+	 */
+	protected $crypt;
+
+	/**
 	 * Logger
 	 *
 	 * @var \Psr\Log\LoggerInterface
@@ -58,13 +79,11 @@ class Listener implements MessageComponentInterface
 		if(is_array($msg))
 		{
 			call_user_func($this->callback, $msg, $this->logger);
-
-			$this->logger->info(json_encode($msg));
 		}
 
 		if($msg === false)
 		{
-			$this->logger->notice('Message from ' . $from->remoteAddress . ' is invalid.');
+			$this->logger->error('Message from ' . $from->remoteAddress . ' is invalid.');
 		}
 	}
 
@@ -104,10 +123,10 @@ class Listener implements MessageComponentInterface
 		if(array_shift($collection) === 'VOTE')
 		{
 			return [
-				'service_name' => $collection[0],
-				'player' => $collection[1],
-				'ip' => $collection[2],
-				'voted_at' => $collection[3]
+				'serviceName' => $collection[0],
+				'username' => $collection[1],
+				'address' => $collection[2],
+				'timeStamp' => $collection[3]
 			];
 		}
 

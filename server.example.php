@@ -15,7 +15,8 @@ $config = [
 
 $server = new Votifier($config, function($message, $log) // $message returns array
 {
-	echo json_encode($message), PHP_EOL;
+	var_dump($message);
+	echo PHP_EOL;
 
 	$log->notice('This is a test notice');
 });
