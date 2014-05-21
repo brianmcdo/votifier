@@ -47,15 +47,16 @@ openssl rsa -in private.pem -pubout > public.pem
 Message Returns
 ```
     array(4) {
-      ["service_name"]=>
-      string(5) "example-vote-site"
-      ["player"]=>
-      string(9) "Steve"
-      ["ip"]=>
-      string(9) "play.example.com"
-      ["voted_at"]=>
-      string(10) "1400580651"
+      'serviceName' =>
+      string(5) "MinecraftVoteSite"
+      'username' =>
+      string(5) "Steve"
+      'address' =>
+      string(9) "example.com"
+      'timeStamp' =>
+      string(10) "1400647120"
     }
+
 ```
 
 ### Set PSR-3 Compatible Logger (Optional)
