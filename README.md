@@ -37,7 +37,8 @@ openssl rsa -in private.pem -pubout > public.pem
 ### Initialize
 
 ```php
-    $server = new Votifier($config, function($message) // $message returns array
+    // $message returns array | $logger returns instance of Psr\Log\LoggerInterface;
+    $server = new Votifier($config, function($message, $logger)
     {
         // Your code goes here
     });
