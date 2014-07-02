@@ -4,7 +4,7 @@ use Psr\Log\LoggerInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 
-class Listener implements MessageComponentInterface
+class MessageComponent implements MessageComponentInterface
 {
 	/**
 	 * Configuration
@@ -116,9 +116,7 @@ class Listener implements MessageComponentInterface
 	 */
 	public function decode($msg)
 	{
-		$msg = trim($msg);
-
-		$collection = preg_split("/\\r\\n|\\r|\\n/", $msg);
+		$collection = preg_split("/\\r\\n|\\r|\\n/", trim($msg));
 
 		if(array_shift($collection) === 'VOTE')
 		{

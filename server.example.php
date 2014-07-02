@@ -5,7 +5,9 @@ require __DIR__ . '/vendor/autoload.php';
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use BFoxwell\Votifier\Votifier;
+use Psr\Log\LoggerInterface;
 
+// Set Configuration
 $config = [
 	'key' => __DIR__ . '/private.pem', // Required File Path
 	'passphrase' => '', // Default: empty
@@ -13,18 +15,20 @@ $config = [
 	'port' => 8192, // Default: 8192
 ];
 
-$server = new Votifier($config, function($message, $log) // $message returns array
+// Set Callable Function
+$callback = function(array $message, LoggerInterface $log)
 {
-	var_dump($message);
-	echo PHP_EOL;
+    var_dump($message);
+    $log->notice('Logging an event.');
+};
 
-	$log->notice('This is a test notice');
-});
+// Instantiate Votifier Server
+$server = new Votifier($config, $callback);
 
-$log = new Logger('Votifier');
+// Setup Logger (Optional)
+$logger = new Logger('Votifier');
+$logger->pushHandler(new StreamHandler(__DIR__ . '/votifier.log'));
+$server->setLogger($logger);
 
-$log->pushHandler(new StreamHandler(__DIR__ . '/votifier.log'));
-
-$server->setLogger($log); // Set Logger (optional)
-
+// Start Server
 $server->run();
