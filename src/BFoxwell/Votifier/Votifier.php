@@ -32,12 +32,12 @@ class Votifier implements LoggerAwareInterface
 	 */
 	protected $logger;
 
-    /**
-     * Closure passed to Message Component
-     *
-     * @var callable
-     */
-    protected $closure;
+	/**
+	 * Closure passed to Message Component
+	 *
+	 * @var callable
+	 */
+	protected $closure;
 
 	/**
 	 * Votifier Server
@@ -52,25 +52,25 @@ class Votifier implements LoggerAwareInterface
 		$this->closure = $closure;
 	}
 
-    /**
-     * Start Server
-     */
-    public function run()
+	/**
+	 * Start Server
+	 */
+	public function run()
 	{
 		if( ! $this->logger instanceof LoggerInterface)
 		{
 			$this->logger = new NullLogger;
 		}
 
-        $listener = new MessageComponent($this->config, $this->closure, new Crypt, $this->logger);
+		$listener = new MessageComponent($this->config, $this->closure, new Crypt, $this->logger);
 
-        $server = new Server(
-            $listener,
-            $this->config['port'],
-            $this->config['address']
-        );
+		$server = new Server(
+			$listener,
+			$this->config['port'],
+			$this->config['address']
+		);
 
-        $server->start();
+		$server->start();
 	}
 
 	/**

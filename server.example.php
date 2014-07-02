@@ -18,8 +18,8 @@ $config = [
 // Set Callable Function
 $callback = function(array $message, LoggerInterface $log)
 {
-    var_dump($message);
-    $log->notice('Logging an event.');
+	var_dump($message);
+	$log->notice('Logging an event.');
 };
 
 // Instantiate Votifier Server
