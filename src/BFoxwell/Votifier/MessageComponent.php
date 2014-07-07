@@ -18,7 +18,7 @@ class MessageComponent implements MessageComponentInterface
 	 *
 	 * @var callable
 	 */
-	protected $callback;
+	protected $closure;
 
 	/**
 	 * Crypto Library
@@ -38,14 +38,14 @@ class MessageComponent implements MessageComponentInterface
 	 * Listener
 	 *
 	 * @param array $config
-	 * @param callable $callback
+	 * @param callable $closure
 	 * @param Crypt $crypt
 	 * @param \Psr\Log\LoggerInterface $logger
 	 */
-	public function __construct(array $config, callable $callback, Crypt $crypt, LoggerInterface $logger)
+	public function __construct(array $config, \Closure $closure, Crypt $crypt, LoggerInterface $logger)
 	{
 		$this->config = $config;
-		$this->callback = $callback;
+		$this->closure = $closure;
 		$this->crypt = $crypt;
 		$this->logger = $logger;
 	}
@@ -78,7 +78,8 @@ class MessageComponent implements MessageComponentInterface
 
 		if(is_array($msg))
 		{
-			call_user_func($this->callback, $msg, $this->logger);
+            $lambda = new \ReflectionFunction($this->closure);
+            $lambda->invokeArgs( [$msg, $this->logger] );
 		}
 
 		if($msg === false)
