@@ -78,7 +78,13 @@ Message Returns
     $server->run();
 ```
 
-## TODO
+## Run with Supervisord
 
-* Add usage with supervisord to readme.
-* Do unit tests.
+### Config Files
+```bash
+[program:votifier_vanilla]
+command=php index.php vanilla
+directory=/home/minecraft/http/viper-votifier
+stdout_logfile=/home/minecraft/http/api/app/storage/logs/votifier_vanilla_supervisord.log
+redirect_stderr=true
+```
